@@ -24,6 +24,31 @@ CSRF_TRUSTED_ORIGINS = [
     if o.strip()
 ]
 
+INSTALLED_APPS = [
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "whitenoise.runserver_nostatic",
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'rooms',
+    'tenants',
+    'billing.apps.BillingConfig',
+    'expenses',
+    'public_site',
+    'dashboard',
+    'maintenance',
+]
+
+
+
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 # --- Database (Render provides DATABASE_URL when Postgres is attached) ---
