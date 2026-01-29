@@ -1,0 +1,23 @@
+{% extends "public/base_public.html" %}
+{% block title %}Gallery — Sunrise{% endblock %}
+
+{% block content %}
+<h1 class="section-title">Gallery</h1>
+<p class="section-sub">Explore our rooms and facilities (sample photos for prototype).</p>
+
+<div class="d-flex gap-2 flex-wrap mb-3">
+  <button class="btn btn-outline-sunrise">All</button>
+  <button class="btn btn-outline-sunrise">Rooms</button>
+  <button class="btn btn-outline-sunrise">Bathrooms</button>
+  <button class="btn btn-outline-sunrise">Common Areas</button>
+  <button class="btn btn-outline-sunrise">Outside</button>
+</div>
+
+<div class="row g-3">
+  {% for i in "12345678" %}
+  <div class="col-md-3 col-6">
+    <img class="gallery-img" src="/static/img/gallery_placeholder_1.jpg" alt="Gallery">
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

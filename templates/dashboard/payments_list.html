@@ -1,0 +1,67 @@
+{% extends "dashboard/base_dashboard.html" %}
+{% block title %}Payments{% endblock %}
+{% block content %}
+
+ <div class="sun-card p-4 mb-4">
+  <h5 class="section-title mb-2">Record Rent Payment</h5>
+  <p class="small-note mb-3">
+    Record a student payment (Mobile Money, Cash, Bank, etc.)
+  </p>
+
+  {% if messages %}
+    {% for m in messages %}
+      <div class="alert alert-{{ m.tags }} mb-2">{{ m }}</div>
+    {% endfor %}
+  {% endif %}
+
+  <form method="post">
+    {% csrf_token %}
+
+    <div class="row g-3">
+
+      <div class="col-md-6">
+        <label class="form-label">Invoice</label>
+        {{ form.invoice }}
+        {% if form.invoice.errors %}
+          <div class="text-danger small">{{ form.invoice.errors }}</div>
+        {% endif %}
+      </div>
+
+      <div class="col-md-3">
+        <label class="form-label">Amount (ZMW)</label>
+        {{ form.amount }}
+        {% if form.amount.errors %}
+          <div class="text-danger small">{{ form.amount.errors }}</div>
+        {% endif %}
+      </div>
+
+      <div class="col-md-3">
+        <label class="form-label">Payment Method</label>
+        {{ form.method }}
+        {% if form.method.errors %}
+          <div class="text-danger small">{{ form.method.errors }}</div>
+        {% endif %}
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label">Reference / Transaction ID</label>
+        {{ form.reference }}
+        <div class="small-note">
+          Optional (Mobile Money ref, receipt number, etc.)
+        </div>
+        {% if form.reference.errors %}
+          <div class="text-danger small">{{ form.reference.errors }}</div>
+        {% endif %}
+      </div>
+
+    </div>
+
+    <div class="mt-4 d-flex justify-content-end">
+      <button class="btn btn-sunrise px-4" type="submit">
+        Save Payment
+      </button>
+    </div>
+  </form>
+</div>
+{% endblock %}
+

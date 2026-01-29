@@ -1,0 +1,101 @@
+{% extends "public/base_public.html" %}
+{% block title %}Sunrise Student Boarding House{% endblock %}
+
+{% block content %}
+<section class="hero mb-4">
+  <div class="hero-content">
+    <h1>Affordable, Secure & Comfortable Student Accommodation</h1>
+    <p class="mt-3">
+      Welcome to <strong>Sunrise Student Boarding House</strong> — located in
+      <strong>Chalala, Lusaka</strong>, near <strong>Tick Schools</strong> and <strong>Apex University</strong>.
+      A quiet, clean and supportive environment for students.
+    </p>
+
+    <div class="d-flex gap-2 flex-wrap mt-4">
+      <a href="{% url 'rooms' %}" class="btn btn-sunrise">View Rooms</a>
+      <a target="_blank"
+         href="https://wa.me/260977316161?text=Hello%20Sunrise%20Student%20Boarding%20House,%20I%20would%20like%20to%20book%20a%20bedspace."
+         class="btn btn-outline-sunrise">
+        WhatsApp to Book
+      </a>
+    </div>
+  </div>
+</section>
+
+<div class="avail-bar">
+  <div class="avail-card">
+    <div>
+      <div class="small-note">Available Beds Today</div>
+      <strong>{{ available_beds }}</strong>
+      <span class="ms-2 avail-pill">Chalala • Lusaka</span>
+    </div>
+    <a target="_blank"
+       href="https://wa.me/260977316161?text=Hello%20Sunrise%20Student%20Boarding%20House,%20I%20would%20like%20to%20book%20a%20bedspace."
+       class="btn btn-sunrise">
+      WhatsApp to Book
+    </a>
+  </div>
+</div>
+
+<section class="mt-5">
+  <div class="row g-3">
+    <div class="col-md-4">
+      <div class="sun-card p-4 h-100">
+        <h5 class="section-title">✅ Secure Environment</h5>
+        <p class="section-sub mt-2 mb-0">Safe surroundings and good house management.</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="sun-card p-4 h-100">
+        <h5 class="section-title">✅ Caretaker Support</h5>
+        <p class="section-sub mt-2 mb-0">A caretaker ensures smooth daily operations.</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="sun-card p-4 h-100">
+        <h5 class="section-title">✅ Quiet & Clean</h5>
+        <p class="section-sub mt-2 mb-0">Comfortable spaces and a study-friendly atmosphere.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="mt-5">
+  <div class="d-flex justify-content-between align-items-end gap-2 flex-wrap">
+    <div>
+      <h2 class="section-title mb-1">Featured Rooms</h2>
+      <p class="section-sub mb-0">Preview some of our rooms and availability.</p>
+    </div>
+    <a class="btn btn-outline-sunrise" href="{% url 'rooms' %}">View All Rooms</a>
+  </div>
+
+  <div class="row g-3 mt-2">
+    {% for r in rooms %}
+    <div class="col-md-4">
+      <div class="sun-card p-3 h-100">
+        <img src="/static/{{ r.img }}" class="w-100" style="height:200px; object-fit:cover; border-radius:16px;" alt="Room">
+        <div class="mt-3">
+          <h5 class="card-title">{{ r.name }}</h5>
+          <div class="small-note">Capacity: {{ r.capacity }} students</div>
+          <div class="mt-2 d-flex justify-content-between align-items-center">
+            <div>
+              <div class="small-note">Price / Student</div>
+              <strong>ZMW {{ r.price_per_student }}</strong>
+            </div>
+            {% if r.available > 0 %}
+              <span class="badge badge-available">Available: {{ r.available }}</span>
+            {% else %}
+              <span class="badge badge-full">Full</span>
+            {% endif %}
+          </div>
+          <a class="btn btn-sunrise w-100 mt-3" target="_blank"
+             href="https://wa.me/260977316161?text=Hello%20Sunrise%20Student%20Boarding%20House,%20I%20want%20to%20book%20a%20bedspace%20in%20{{ r.name|urlencode }}.">
+            WhatsApp to Book
+          </a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,103 @@
+{% extends "dashboard/base_dashboard.html" %}
+{% block title %}Maintenance Reports{% endblock %}
+
+{% block content %}
+<h1 class="section-title">Maintenance Reports</h1>
+<p class="section-sub">Summary and breakdown of repairs and costs.</p>
+
+<div class="sun-card p-4 mb-4">
+  <form method="get" class="d-flex flex-wrap gap-2 align-items-end">
+    <div>
+      <label class="form-label small-note mb-1">Filter Month (YYYY-MM)</label>
+      <input type="month" name="month" class="form-control form-control-sm" value="{{ month }}">
+    </div>
+    <div class="d-flex gap-2">
+      <button class="btn btn-sm btn-outline-secondary" type="submit">Apply</button>
+      <a class="btn btn-sm btn-outline-secondary" href="{% url 'dash_maintenance_reports' %}">Reset</a>
+    </div>
+  </form>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-3"><div class="sun-card p-3"><div class="small-note">Total Requests</div><div class="kpi-number">{{ total_count }}</div></div></div>
+  <div class="col-md-3"><div class="sun-card p-3"><div class="small-note">Open</div><div class="kpi-number">{{ open_count }}</div></div></div>
+  <div class="col-md-3"><div class="sun-card p-3"><div class="small-note">In Progress</div><div class="kpi-number">{{ inprog_count }}</div></div></div>
+  <div class="col-md-3"><div class="sun-card p-3"><div class="small-note">Done</div><div class="kpi-number">{{ done_count }}</div></div></div>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-6"><div class="sun-card p-3"><div class="small-note">Estimated Total</div><div class="kpi-number">ZMW {{ est_total }}</div></div></div>
+  <div class="col-md-6"><div class="sun-card p-3"><div class="small-note">Actual Total</div><div class="kpi-number">ZMW {{ act_total }}</div></div></div>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-6">
+    <div class="sun-card p-4">
+      <h5 class="section-title mb-2">By Room</h5>
+      <table class="table align-middle">
+        <thead><tr><th>Room</th><th>Count</th><th>Estimated</th><th>Actual</th></tr></thead>
+        <tbody>
+          {% for r in by_room %}
+          <tr>
+            <td class="fw-bold">{{ r.room__name }}</td>
+            <td>{{ r.count }}</td>
+            <td>ZMW {{ r.estimated|default:0 }}</td>
+            <td class="fw-bold">ZMW {{ r.actual|default:0 }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="4" class="text-center small-note">No room-based requests.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="sun-card p-4">
+      <h5 class="section-title mb-2">By Area</h5>
+      <table class="table align-middle">
+        <thead><tr><th>Area</th><th>Count</th><th>Estimated</th><th>Actual</th></tr></thead>
+        <tbody>
+          {% for a in by_area %}
+          <tr>
+            <td class="fw-bold">{{ a.area__name }}</td>
+            <td>{{ a.count }}</td>
+            <td>ZMW {{ a.estimated|default:0 }}</td>
+            <td class="fw-bold">ZMW {{ a.actual|default:0 }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="4" class="text-center small-note">No area-based requests.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="sun-card p-4">
+  <h5 class="section-title mb-2">Monthly Trend</h5>
+  <canvas id="maintTrend"></canvas>
+</div>
+
+<script>
+  const labels = JSON.parse('{{ trend_labels|default:"[]"|escapejs }}');
+  const counts = JSON.parse('{{ trend_count|default:"[]"|escapejs }}');
+  const actuals = JSON.parse('{{ trend_actual|default:"[]"|escapejs }}');
+
+  const el = document.getElementById("maintTrend");
+  if (el && window.Chart) {
+    new Chart(el, {
+      type: "bar",
+      data: {
+        labels: labels,
+        datasets: [
+          { label: "Requests", data: counts },
+          { label: "Actual Cost (ZMW)", data: actuals }
+        ]
+      },
+      options: { responsive: true }
+    });
+  }
+</script>
+
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends "dashboard/base_dashboard.html" %}
+{% block title %}Students — Sunrise Manager{% endblock %}
+
+{% block content %}
+<h1 class="section-title">Students</h1>
+<p class="section-sub">Student list with latest room assignment.</p>
+<div class="sun-card p-4 mb-4">
+  <h5 class="section-title mb-2">Add Student</h5>
+
+  {% if messages %}
+    {% for m in messages %}
+      <div class="alert alert-{{ m.tags }}">{{ m }}</div>
+    {% endfor %}
+  {% endif %}
+
+  <form method="post">
+    {% csrf_token %}
+
+    <div class="row g-2">
+      <div class="col-md-6">
+        <label class="form-label">Full Name</label>
+        {{ form.full_name }}
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Phone</label>
+        {{ form.phone }}
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Guardian Name</label>
+        {{ form.guardian_name }}
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Guardian Phone</label>
+        {{ form.guardian_phone }}
+      </div>
+      <div class="col-md-12">
+        <label class="form-label">School</label>
+        {{ form.school }}
+      </div>
+    </div>
+
+    <button class="btn btn-sunrise mt-3">Save Student</button>
+  </form>
+</div>
+
+<div class="sun-card p-4">
+  <div class="table-responsive">
+    <table class="table align-middle">
+      <thead>
+        <tr>
+          <th>Student</th>
+          <th>Phone</th>
+          <th>Room</th>
+          <th>Entry Date</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in students %}
+        <tr>
+          <td class="fw-bold">{{ s.full_name }}</td>
+          <td>{{ s.phone }}</td>
+          <td>{{ s.room_name|default:"—" }}</td>
+          <td>{{ s.entry_date|date:"Y-m-d"|default:"—" }}</td>
+          <td>
+            {% if s.active %}
+              <span class="badge badge-available">Active</span>
+            {% else %}
+              <span class="badge badge-full">Inactive</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5" class="text-center small-note">No students found. Add students in Admin.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends "public/base_public.html" %}
+{% block title %}Contact — Sunrise{% endblock %}
+
+{% block content %}
+<h1 class="section-title">Contact Us</h1>
+<p class="section-sub">We are located in Chalala, Lusaka — near Tick Schools and Apex University.</p>
+
+<div class="row g-3 mt-3">
+  <div class="col-md-6">
+    <div class="sun-card p-4 h-100">
+      <h4 class="section-title">📞 Call / WhatsApp</h4>
+      <p class="mt-2 mb-1"><strong>0977316161</strong></p>
+      <p class="section-sub">Tap below to chat instantly and book a bedspace.</p>
+      <a class="btn btn-sunrise" target="_blank"
+         href="https://wa.me/260977316161?text=Hello%20Sunrise%20Student%20Boarding%20House,%20I%20would%20like%20to%20book%20a%20bedspace.">
+        WhatsApp Now
+      </a>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="sun-card p-4 h-100">
+      <h4 class="section-title">📍 Location</h4>
+      <p class="section-sub mt-2">
+        Chalala, Lusaka — near Tick Schools and Apex University.
+      </p>
+      <div class="small-note">Google map embed can be added later when you have coordinates.</div>
+    </div>
+  </div>
+</div>
+
+<div class="sun-card p-4 mt-3">
+  <h4 class="section-title">✉️ Send a Message (Prototype)</h4>
+  <p class="section-sub">This is a placeholder contact form for the prototype.</p>
+  <form class="row g-3">
+    <div class="col-md-6">
+      <label class="form-label">Full Name</label>
+      <input class="form-control" placeholder="Your name">
+    </div>
+    <div class="col-md-6">
+      <label class="form-label">Phone Number</label>
+      <input class="form-control" placeholder="Your phone number">
+    </div>
+    <div class="col-12">
+      <label class="form-label">Message</label>
+      <textarea class="form-control" rows="4" placeholder="Write your message..."></textarea>
+    </div>
+    <div class="col-12">
+      <button type="button" class="btn btn-sunrise">Send Message</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends "dashboard/base_dashboard.html" %}
+{% block title %}Invoices — Sunrise Manager{% endblock %}
+
+{% block content %}
+<h1 class="section-title">Invoices</h1>
+<p class="section-sub">Recent invoices (latest 200).</p>
+
+<div class="sun-card p-4">
+  <div class="table-responsive">
+    <table class="table align-middle">
+      <thead>
+        <tr>
+          <th>Student</th>
+          <th>Room</th>
+          <th>Due Date</th>
+          <th>Amount Due</th>
+          <th>Paid</th>
+          <th>Balance</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for inv in invoices %}
+        <tr>
+          <td class="fw-bold">{{ inv.student.full_name }}</td>
+          <td>{{ inv.occupancy.room.name }}</td>
+          <td>{{ inv.due_date }}</td>
+          <td>ZMW {{ inv.amount_due }}</td>
+          <td>ZMW {{ inv.amount_paid }}</td>
+          <td class="fw-bold">ZMW {{ inv.balance }}</td>
+          <td>
+            {% if inv.status == "PAID" %}
+              <span class="badge badge-available">Paid</span>
+            {% elif inv.status == "PARTIAL" %}
+              <span class="badge badge-available">Partial</span>
+            {% elif inv.status == "OVERDUE" %}
+              <span class="badge badge-full">Overdue</span>
+            {% else %}
+              <span class="badge badge-full">Unpaid</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="7" class="text-center small-note">No invoices yet. Run generate_invoices.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+

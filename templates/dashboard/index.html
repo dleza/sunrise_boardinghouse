@@ -1,0 +1,164 @@
+{% extends "dashboard/base_dashboard.html" %}
+{% block title %}Dashboard — Sunrise Manager{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-end flex-wrap gap-2">
+  <div>
+    <h1 class="section-title mb-1">Dashboard</h1>
+    <p class="section-sub mb-0">Overview of occupancy, rent, expenses and profit (sample data).</p>
+  </div>
+  <div class="d-flex gap-2 flex-wrap">
+    <a class="btn btn-outline-sunrise" href="{% url 'dash_payments' %}">+ Record Payment</a>
+    <a class="btn btn-sunrise" href="{% url 'dash_students' %}">+ Add Student</a>
+  </div>
+</div>
+
+<div class="row g-3 mt-3">
+  <div class="col-md-4 col-lg-2">
+    <div class="kpi">
+      <div class="label">Occupied Beds</div>
+      <div class="value">{{ occupied_beds }}</div>
+      <div class="hint">Current</div>
+    </div>
+  </div>
+  <div class="col-md-4 col-lg-2">
+    <div class="kpi">
+      <div class="label">Available Beds</div>
+      <div class="value">{{ available_beds }}</div>
+      <div class="hint">Public shows this</div>
+    </div>
+  </div>
+  <div class="col-md-4 col-lg-2">
+    <div class="kpi">
+      <div class="label">Rent Collected</div>
+      <div class="value">ZMW {{ rent_collected }}</div>
+      <div class="hint">This month</div>
+    </div>
+  </div>
+  <div class="col-md-4 col-lg-2">
+    <div class="kpi">
+      <div class="label">Overdue Rent</div>
+      <div class="value">ZMW {{ overdue_rent }}</div>
+      <div class="hint">Attention needed</div>
+    </div>
+  </div>
+  <div class="col-md-4 col-lg-2">
+    <div class="kpi">
+      <div class="label">Expenses</div>
+      <div class="value">ZMW {{ expenses }}</div>
+      <div class="hint">This month</div>
+    </div>
+  </div>
+  <div class="col-md-4 col-lg-2">
+    <div class="kpi">
+      <div class="label">Profit</div>
+      <div class="value">ZMW {{ profit }}</div>
+      <div class="hint">This month</div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3 mt-3">
+  <div class="col-lg-6">
+    <div class="sun-card p-4">
+      <h5 class="section-title mb-0">Rent Collected Trend</h5>
+      <p class="section-sub">Last 6 months</p>
+      <canvas id="rentChart" height="120"></canvas>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="sun-card p-4">
+      <h5 class="section-title mb-0">Expenses Trend</h5>
+      <p class="section-sub">Last 6 months</p>
+      <canvas id="expenseChart" height="120"></canvas>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3 mt-3">
+  <div class="col-lg-4">
+    <div class="sun-card p-4">
+      <h5 class="section-title mb-0">Occupancy Rate</h5>
+      <p class="section-sub">Occupied vs available</p>
+      <canvas id="occupancyChart" height="210"></canvas>
+    </div>
+  </div>
+  <div class="col-lg-8">
+    <div class="sun-card p-4">
+      <h5 class="section-title mb-2">Alerts</h5>
+
+      <div class="small-note fw-bold mb-2">Overdue Students (sample)</div>
+      <div class="table-responsive">
+        <table class="table align-middle">
+          <thead>
+            <tr>
+              <th>Student</th>
+              <th>Room</th>
+              <th>Amount</th>
+              <th>Days Overdue</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Mary Banda</td>
+              <td>Master Bedroom</td>
+              <td>ZMW 750</td>
+              <td><span class="badge badge-full">12 days</span></td>
+              <td><a class="btn btn-outline-sunrise btn-sm" href="{% url 'dash_payments' %}">Record Payment</a></td>
+            </tr>
+            <tr>
+              <td>Brian Phiri</td>
+              <td>TV Room</td>
+              <td>ZMW 500</td>
+              <td><span class="badge badge-full">7 days</span></td>
+              <td><a class="btn btn-outline-sunrise btn-sm" href="{% url 'dash_payments' %}">Record Payment</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="small-note fw-bold mt-3 mb-2">Upcoming Payments (Next 7 Days)</div>
+      <div class="table-responsive">
+        <table class="table align-middle">
+          <thead>
+            <tr>
+              <th>Student</th>
+              <th>Room</th>
+              <th>Due Date</th>
+              <th>Amount</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Kelvin Zulu</td>
+              <td>Dining Room</td>
+              <td>15 Jan</td>
+              <td>ZMW 375</td>
+              <td><a class="btn btn-sunrise btn-sm" href="{% url 'dash_invoices' %}">View Invoice</a></td>
+            </tr>
+            <tr>
+              <td>Susan Tembo</td>
+              <td>Office Room</td>
+              <td>18 Jan</td>
+              <td>ZMW 650</td>
+              <td><a class="btn btn-sunrise btn-sm" href="{% url 'dash_invoices' %}">View Invoice</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+</div>
+<script>
+  window.__DASH_DATA__ = {
+    labels: {{ chart_labels|safe }},
+    rent: {{ chart_rent|safe }},
+    expenses: {{ chart_expenses|safe }},
+    occupancy: {{ chart_occ|safe }}
+  };
+</script>
+
+{% endblock %}

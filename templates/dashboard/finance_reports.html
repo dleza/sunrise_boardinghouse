@@ -1,0 +1,89 @@
+{% extends "dashboard/base_dashboard.html" %}
+{% block title %}Finance Reports{% endblock %}
+
+{% block content %}
+<h1 class="section-title">Finance Reports</h1>
+<p class="section-sub">Rent collection, expenses, maintenance costs, and profit.</p>
+
+<div class="sun-card p-4 mb-4">
+  <form method="get" class="d-flex flex-wrap gap-2 align-items-end">
+    <div>
+      <label class="form-label small-note mb-1">Filter Month</label>
+      <input type="month" name="month" class="form-control form-control-sm" value="{{ month }}">
+    </div>
+    <div class="d-flex gap-2">
+      <button class="btn btn-sm btn-outline-secondary" type="submit">Apply</button>
+      <a class="btn btn-sm btn-outline-secondary" href="{% url 'dash_finance_reports' %}">Reset</a>
+    </div>
+  </form>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-3"><div class="sun-card p-3"><div class="small-note">Rent Collected</div><div class="kpi-number">ZMW {{ rent_total }}</div></div></div>
+  <div class="col-md-3"><div class="sun-card p-3"><div class="small-note">Expenses</div><div class="kpi-number">ZMW {{ exp_total }}</div></div></div>
+  <div class="col-md-3"><div class="sun-card p-3"><div class="small-note">Maintenance (Done)</div><div class="kpi-number">ZMW {{ maint_total }}</div></div></div>
+  <div class="col-md-3"><div class="sun-card p-3"><div class="small-note">Profit</div><div class="kpi-number">ZMW {{ profit_total }}</div></div></div>
+</div>
+
+<div class="sun-card p-4 mb-4">
+  <h5 class="section-title mb-2">Trend</h5>
+  <canvas id="financeTrend"></canvas>
+  <div class="small-note mt-2">If you don’t see a chart, make sure Chart.js is loaded in the dashboard base template.</div>
+</div>
+
+<div class="sun-card p-4">
+  <h5 class="section-title mb-2">Monthly Breakdown</h5>
+  <div class="table-responsive">
+    <table class="table align-middle">
+      <thead>
+        <tr>
+          <th>Month</th>
+          <th>Rent</th>
+          <th>Expenses</th>
+          <th>Maintenance</th>
+          <th>Profit</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in rows %}
+        <tr>
+          <td class="fw-bold">{{ r.month }}</td>
+          <td>ZMW {{ r.rent }}</td>
+          <td>ZMW {{ r.expenses }}</td>
+          <td>ZMW {{ r.maintenance }}</td>
+          <td class="fw-bold">ZMW {{ r.profit }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5" class="text-center small-note">No data yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  const labels = {{ labels|safe }};
+  const rent = {{ rent_series|safe }};
+  const exp = {{ exp_series|safe }};
+  const maint = {{ maint_series|safe }};
+  const profit = {{ profit_series|safe }};
+
+  const el = document.getElementById("financeTrend");
+  if (el && window.Chart) {
+    new Chart(el, {
+      type: "line",
+      data: {
+        labels,
+        datasets: [
+          { label: "Rent (ZMW)", data: rent, tension: 0.35 },
+          { label: "Expenses (ZMW)", data: exp, tension: 0.35 },
+          { label: "Maintenance (ZMW)", data: maint, tension: 0.35 },
+          { label: "Profit (ZMW)", data: profit, tension: 0.35 }
+        ]
+      },
+      options: { responsive: true }
+    });
+  }
+</script>
+
+{% endblock %}

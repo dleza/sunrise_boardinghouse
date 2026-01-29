@@ -1,0 +1,20 @@
+{% extends "public/base_public.html" %}
+{% block title %}Tips & Advice — Sunrise{% endblock %}
+
+{% block content %}
+<h1 class="section-title">Tips & Advice</h1>
+<p class="section-sub">Guidance for students choosing a safe and comfortable boarding house.</p>
+
+<div class="row g-3 mt-3">
+  {% for p in posts %}
+  <div class="col-md-6">
+    <div class="sun-card p-4 h-100">
+      <div class="small-note">{{ p.date }}</div>
+      <h4 class="section-title mt-1">{{ p.title }}</h4>
+      <p class="section-sub mt-2">{{ p.summary }}</p>
+      <a class="btn btn-outline-sunrise" href="{% url 'tips_detail' p.slug %}">Read More</a>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

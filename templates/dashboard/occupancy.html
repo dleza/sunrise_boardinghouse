@@ -1,0 +1,129 @@
+{% extends "dashboard/base_dashboard.html" %}
+{% block title %}Room Assignment{% endblock %}
+
+{% block content %}
+<h1 class="section-title">Room Assignment</h1>
+
+<div class="sun-card p-4 mb-4">
+  <h5 class="section-title mb-2">Assign Student to Room</h5>
+
+  {% if messages %}
+    {% for m in messages %}
+      <div class="alert alert-{{ m.tags }}">{{ m }}</div>
+    {% endfor %}
+  {% endif %}
+
+  <form method="post">
+    {% csrf_token %}
+    <label class="form-label">Student</label>
+    {{ form.student }}
+
+    <label class="form-label mt-2">Room</label>
+    {{ form.room }}
+
+    <label class="form-label mt-2">Entry Date</label>
+    {{ form.entry_date }}
+
+    <button class="btn btn-sunrise mt-3">Assign</button>
+  </form>
+</div>
+
+<div class="sun-card p-4">
+  <h5 class="section-title mb-2">Current Occupancy</h5>
+  <table class="table align-middle">
+    <thead>
+        
+      <tr>
+        <th>Student</th>
+        <th>Room</th>
+        <th>Entry Date</th>
+        <th>Status</th>
+        <th>Actions</th>
+         
+      </tr>
+    </thead>
+    <tbody>
+      {% for o in occupancies %}
+      <tr>
+        <td>{{ o.student.full_name }}</td>
+        <td>{{ o.room.name }}</td>
+        <td>{{ o.entry_date }}</td>
+        <td>
+          {% if o.active %}
+            <span class="badge badge-available">Active</span>
+          {% else %}
+            <span class="badge badge-full">Exited</span>
+          {% endif %}
+        </td>
+        <td>
+  {% if o.active %}
+    <!-- Exit -->
+    <form method="post" action="{% url 'dash_occupancy_exit' o.id %}" style="display:inline;">
+      {% csrf_token %}
+      <input type="hidden" name="exit_date" value="{{ today|default:'' }}">
+      <button class="btn btn-sm btn-outline-danger" type="submit">Exit</button>
+    </form>
+
+    <!-- Transfer -->
+    <button class="btn btn-sm btn-outline-primary" type="button"
+            onclick="openTransfer('{{ o.id }}', '{{ o.student.full_name|escapejs }}', '{{ o.room.name|escapejs }}')">
+      Transfer
+    </button>
+  {% else %}
+    <span class="small-note">—</span>
+  {% endif %}
+</td>
+
+      </tr>
+      {% empty %}
+      <tr><td colspan="4" class="text-center small-note">No occupancy records yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Transfer Modal -->
+ <div class="modal" tabindex="-1" id="transferModal" style="display:none;">
+  <div class="modal-dialog">
+    <div class="modal-content p-3">
+      <h5 class="mb-2">Transfer Student</h5>
+      <p class="small-note" id="transferInfo"></p>
+
+      <form method="post" id="transferForm">
+        {% csrf_token %}
+
+        <label class="form-label">New Room</label>
+        <select name="new_room" class="form-select">
+          {% for r in all_rooms %}
+            <option value="{{ r.id }}">{{ r.name }}</option>
+          {% endfor %}
+        </select>
+
+        <label class="form-label mt-2">Transfer Date</label>
+        <input type="date" name="transfer_date" class="form-control" required>
+
+        <div class="d-flex gap-2 mt-3">
+          <button type="submit" class="btn btn-sunrise">Confirm Transfer</button>
+          <button type="button" class="btn btn-outline-secondary" onclick="closeTransfer()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  function openTransfer(id, student, room){
+    const modal = document.getElementById("transferModal");
+    const info = document.getElementById("transferInfo");
+    const form = document.getElementById("transferForm");
+
+    info.textContent = student + " (currently in " + room + ")";
+    form.action = "/dashboard/occupancy/" + id + "/transfer/";
+    modal.style.display = "block";
+  }
+  function closeTransfer(){
+    document.getElementById("transferModal").style.display = "none";
+  }
+</script>
+
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends "dashboard/base_dashboard.html" %}
+{% block title %}Generate Invoices{% endblock %}
+
+{% block content %}
+<h1 class="section-title">Generate Rent Invoices</h1>
+<p class="section-sub">Generate invoices for all active students for a selected month.</p>
+
+<div class="sun-card p-4">
+  {% if messages %}
+    {% for m in messages %}
+      <div class="alert alert-{{ m.tags }} mb-2">{{ m }}</div>
+    {% endfor %}
+  {% endif %}
+
+ <div class="sun-card p-4">
+
+  {% if messages %}
+    {% for m in messages %}
+      <div class="alert alert-{{ m.tags }} mb-2">{{ m }}</div>
+    {% endfor %}
+  {% endif %}
+
+  <!-- Quick action -->
+  <form method="post" class="mb-4">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="this_month">
+    <button class="btn btn-sunrise btn-lg">
+      Generate Invoices for This Month
+    </button>
+  </form>
+
+  <hr class="my-4">
+
+  <!-- Manual month selection -->
+  <form method="post">
+    {% csrf_token %}
+
+    <div class="row g-3">
+      <div class="col-md-4">
+        <label class="form-label">Billing Month</label>
+        {{ form.month }}
+        <div class="small-note">{{ form.month.help_text }}</div>
+        {% if form.month.errors %}
+          <div class="text-danger small">{{ form.month.errors }}</div>
+        {% endif %}
+      </div>
+    </div>
+
+    <button class="btn btn-outline-secondary mt-3" type="submit">
+      Generate for Selected Month
+    </button>
+  </form>
+
+</div>
+
+</div>
+{% endblock %}

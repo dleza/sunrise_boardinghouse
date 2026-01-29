@@ -1,0 +1,51 @@
+{% extends "dashboard/base_dashboard.html" %}
+{% block title %}Rooms{% endblock %}
+{% block content %}
+
+<div class="sun-card p-4 mb-4">
+  <h5 class="section-title mb-2">Add Room</h5>
+
+  {% if messages %}
+    {% for m in messages %}
+      <div class="alert alert-{{ m.tags }}">{{ m }}</div>
+    {% endfor %}
+  {% endif %}
+
+  <form method="post">
+    {% csrf_token %}
+
+    <div class="row g-2">
+      <div class="col-md-6">
+        <label class="form-label">Room Name</label>
+        {{ room_form.name }}
+        {% if room_form.name.errors %}<div class="text-danger small">{{ room_form.name.errors }}</div>{% endif %}
+      </div>
+
+      <div class="col-md-3">
+        <label class="form-label">Capacity</label>
+        {{ room_form.capacity }}
+        {% if room_form.capacity.errors %}<div class="text-danger small">{{ room_form.capacity.errors }}</div>{% endif %}
+      </div>
+
+      <div class="col-md-3">
+        <label class="form-label">Total Room Price (Optional)</label>
+        {{ price_form.price }}
+        {% if price_form.price.errors %}<div class="text-danger small">{{ price_form.price.errors }}</div>{% endif %}
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label">Price Start Date (Optional)</label>
+        {{ price_form.start_date }}
+        {% if price_form.start_date.errors %}<div class="text-danger small">{{ price_form.start_date.errors }}</div>{% endif %}
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label">Description</label>
+        {{ room_form.description }}
+      </div>
+    </div>
+
+    <button class="btn btn-sunrise mt-3">Save Room</button>
+  </form>
+</div>
+{% endblock %}

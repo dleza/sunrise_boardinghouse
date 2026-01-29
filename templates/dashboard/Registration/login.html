@@ -1,0 +1,25 @@
+{% extends "dashboard/base_dashboard.html" %}
+{% block title %}Login{% endblock %}
+{% block content %}
+<div class="sun-card p-4" style="max-width: 520px;">
+  <h1 class="section-title">Login</h1>
+  <p class="section-sub">Sunrise Student Boarding House</p>
+
+  {% if form.errors %}
+    <div class="alert alert-danger">Invalid username or password.</div>
+  {% endif %}
+
+  <form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label class="form-label">Username</label>
+      <input class="form-control" type="text" name="username" autofocus required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Password</label>
+      <input class="form-control" type="password" name="password" required>
+    </div>
+    <button class="btn btn-sunrise w-100" type="submit">Sign in</button>
+  </form>
+</div>
+{% endblock %}

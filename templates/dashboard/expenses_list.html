@@ -1,0 +1,53 @@
+{% extends "dashboard/base_dashboard.html" %}
+{% block title %}Expenses{% endblock %}
+{% block content %}
+
+<div class="sun-card p-4">
+  <h5 class="section-title mb-2">Add Expense</h5>
+
+  {% if messages %}
+    {% for m in messages %}
+      <div class="alert alert-{{ m.tags }} mb-2">{{ m }}</div>
+    {% endfor %}
+  {% endif %}
+
+  <form method="post">
+    {% csrf_token %}
+
+    <label class="form-label">Category</label>
+    {{ form.category }}
+    {% if form.category.errors %}<div class="text-danger small">{{ form.category.errors }}</div>{% endif %}
+
+    <label class="form-label mt-2">Amount</label>
+    {{ form.amount }}
+    {% if form.amount.errors %}<div class="text-danger small">{{ form.amount.errors }}</div>{% endif %}
+
+    <label class="form-label mt-2">Date</label>
+    {{ form.expense_date }}
+    {% if form.expense_date.errors %}<div class="text-danger small">{{ form.expense_date.errors }}</div>{% endif %}
+
+    <label class="form-label mt-2">Notes</label>
+    {{ form.notes }}
+    {% if form.notes.errors %}<div class="text-danger small">{{ form.notes.errors }}</div>{% endif %}
+
+    <button class="btn btn-sunrise w-100 mt-3" type="submit">Save Expense</button>
+  </form>
+</div>
+
+<table class="table align-middle">
+  <thead><tr><th>Date</th><th>Category</th><th>Amount</th><th>Notes</th></tr></thead>
+  <tbody>
+    {% for e in expenses %}
+    <tr>
+      <td>{{ e.expense_date }}</td>
+      <td class="fw-bold">{{ e.get_category_display }}</td>
+      <td>ZMW {{ e.amount }}</td>
+      <td>{{ e.notes|default:"—" }}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="4" class="text-center small-note">No expenses recorded yet.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}

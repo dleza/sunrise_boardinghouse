@@ -1,0 +1,129 @@
+{% extends "dashboard/base_dashboard.html" %}
+{% block title %}Maintenance — Sunrise Manager{% endblock %}
+
+{% block content %}
+<h1 class="section-title">Maintenance & Repairs</h1>
+<p class="section-sub">Log issues per room, track progress, and capture costs.</p>
+
+<div class="sun-card p-4 mb-4">
+  <h5 class="section-title mb-2">Log New Maintenance Request</h5>
+
+  {% if messages %}
+    {% for m in messages %}
+      <div class="alert alert-{{ m.tags }} mb-2">{{ m }}</div>
+    {% endfor %}
+  {% endif %}
+
+  <form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="create">
+
+    <div class="row g-2">
+      <div class="col-md-4">
+        <label class="form-label">Room (optional)</label>
+        {{ form.room }}
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Area (optional)</label>
+        {{ form.area }}
+      </div>
+
+      <div class="col-md-8">
+        <label class="form-label">Title</label>
+        {{ form.title }}
+      </div>
+      <div class="col-md-12">
+        <label class="form-label">Description</label>
+        {{ form.description }}
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Reported Date</label>
+        {{ form.reported_date }}
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Estimated Cost</label>
+        {{ form.estimated_cost }}
+      </div>
+    </div>
+
+    <button class="btn btn-sunrise mt-3" type="submit">Save Request</button>
+  </form>
+</div>
+
+<div class="sun-card p-4">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+    <h5 class="section-title mb-0">Requests</h5>
+
+    <form method="get" class="d-flex gap-2">
+      <select name="status" class="form-select form-select-sm">
+        <option value="">All Status</option>
+        <option value="OPEN" {% if status_filter == "OPEN" %}selected{% endif %}>Open</option>
+        <option value="IN_PROGRESS" {% if status_filter == "IN_PROGRESS" %}selected{% endif %}>In Progress</option>
+        <option value="DONE" {% if status_filter == "DONE" %}selected{% endif %}>Done</option>
+      </select>
+      <button class="btn btn-sm btn-outline-secondary" type="submit">Filter</button>
+    </form>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table align-middle">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Room</th>
+          <th>Issue</th>
+          <th>Status</th>
+          <th>Est. Cost</th>
+          <th>Actual Cost</th>
+          <th>Resolved</th>
+          <th>Update</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in requests %}
+        <tr>
+          <td>{{ r.reported_date }}</td>
+          <td class="fw-bold">
+              {% if r.room %}{{ r.room.name }}{% elif r.area %}{{ r.area.name }}{% else %}—{% endif %}
+          </td>
+
+          <td>
+            <div class="fw-bold">{{ r.title }}</div>
+            <div class="small-note">{{ r.description|default:"" }}</div>
+          </td>
+          <td>
+            {% if r.status == "OPEN" %}
+              <span class="badge badge-full">Open</span>
+            {% elif r.status == "IN_PROGRESS" %}
+              <span class="badge badge-available">In Progress</span>
+            {% else %}
+              <span class="badge badge-available">Done</span>
+            {% endif %}
+          </td>
+          <td>ZMW {{ r.estimated_cost }}</td>
+          <td class="fw-bold">ZMW {{ r.actual_cost }}</td>
+          <td>{{ r.resolved_date|default:"—" }}</td>
+
+          <td style="min-width: 320px;">
+            <form method="post" action="{% url 'dash_maintenance_update' r.id %}" class="d-flex gap-2 align-items-center">
+              {% csrf_token %}
+              <select name="status" class="form-select form-select-sm" required>
+                <option value="OPEN" {% if r.status == "OPEN" %}selected{% endif %}>Open</option>
+                <option value="IN_PROGRESS" {% if r.status == "IN_PROGRESS" %}selected{% endif %}>In Progress</option>
+                <option value="DONE" {% if r.status == "DONE" %}selected{% endif %}>Done</option>
+              </select>
+              <input type="date" name="resolved_date" class="form-control form-control-sm" value="{{ r.resolved_date|date:'Y-m-d' }}">
+              <input type="number" step="0.01" name="actual_cost" class="form-control form-control-sm" value="{{ r.actual_cost }}">
+              <button class="btn btn-sm btn-outline-primary" type="submit">Save</button>
+            </form>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="8" class="text-center small-note">No maintenance requests yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}
