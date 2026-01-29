@@ -66,7 +66,8 @@ body{
   overflow: hidden;
   box-shadow: var(--shadow);
   min-height: 420px;
-  background: url("/static/img/hero.jpg") center/cover no-repeat;
+  background-image: url("../img/hero.jpg") center/cover no-repeat;
+  /* background: url("/static/img/hero.jpg") center/cover no-repeat; */
 }
 .hero::before{
   content:"";
