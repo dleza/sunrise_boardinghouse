@@ -31,21 +31,16 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "whitenoise.runserver_nostatic",
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'rooms',
-    'tenants',
-    'billing.apps.BillingConfig',
-    'expenses',
-    'public_site',
-    'dashboard',
-    'maintenance',
+
+    "rooms",
+    "tenants",
+    "billing.apps.BillingConfig",
+    "expenses",
+    "public_site",
+    "dashboard",
+    "maintenance",
 ]
+
 
 
 
