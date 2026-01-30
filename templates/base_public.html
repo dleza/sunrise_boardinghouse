@@ -1,0 +1,25 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Sunrise{% endblock %}</title>
+
+  <!-- If you use Bootstrap -->
+  <!-- <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}"> -->
+  <!-- Your site css -->
+  <link rel="stylesheet" href="{% static 'css/sunrise.css' %}">
+</head>
+<body class="bg-light">
+
+  <main class="container py-5">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="text-center small text-muted py-4">
+    Sunrise Student Boarding House • Designed by Leza Danny
+  </footer>
+
+</body>
+</html>
