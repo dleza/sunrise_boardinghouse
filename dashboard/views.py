@@ -953,7 +953,7 @@ from django.utils import timezone
 from datetime import date
 from decimal import Decimal
 
-from billing.models import Payment, Invoice
+from billing.models import RentInvoice, RentPayment
 from expenses.models import Expense
 
 
@@ -975,12 +975,12 @@ def rent_report(request):
     start, end = _month_range(today)
 
     expected = (
-        Invoice.objects.filter(issue_date__gte=start, issue_date__lt=end)
+        RentInvoice.objects.filter(issue_date__gte=start, issue_date__lt=end)
         .aggregate(x=Sum("amount"))["x"] or Decimal("0.00")
     )
 
     collected = (
-        Payment.objects.filter(paid_on__gte=start, paid_on__lt=end)
+        RentPayment.objects.filter(paid_on__gte=start, paid_on__lt=end)
         .aggregate(x=Sum("amount"))["x"] or Decimal("0.00")
     )
 
@@ -1013,7 +1013,7 @@ def profit_report(request):
     start, end = _month_range(today)
 
     collected = (
-        Payment.objects.filter(paid_on__gte=start, paid_on__lt=end)
+        RentPayment.objects.filter(paid_on__gte=start, paid_on__lt=end)
         .aggregate(x=Sum("amount"))["x"] or Decimal("0.00")
     )
 
