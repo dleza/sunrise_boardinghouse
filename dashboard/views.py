@@ -948,7 +948,7 @@ def finance_reports(request):
         "rows": rows[:24],
     })
 
-from django.db.models import Sum
+""" from django.db.models import Sum
 from django.utils import timezone
 from datetime import date
 from decimal import Decimal
@@ -1020,6 +1020,100 @@ def profit_report(request):
     expenses = (
         Expense.objects.filter(date__gte=start, date__lt=end)
         .aggregate(x=Sum("amount"))["x"] or Decimal("0.00")
+    )
+
+    profit = collected - expenses
+
+    return render(request, "dashboard/reports_profit.html", {
+        "start": start, "end": end,
+        "collected": collected,
+        "expenses": expenses,
+        "profit": profit,
+    }) """
+from datetime import date
+from decimal import Decimal
+from django.db.models import Sum
+from django.shortcuts import render
+from django.utils import timezone
+from django.contrib.auth.decorators import login_required
+
+from billing.models import RentInvoice, RentPayment
+from expenses.models import Expense  # adjust if your Expense model name differs
+
+
+def _month_range(d: date):
+    start = d.replace(day=1)
+    if start.month == 12:
+        end = start.replace(year=start.year + 1, month=1, day=1)
+    else:
+        end = start.replace(month=start.month + 1, day=1)
+    return start, end
+
+
+@login_required
+def rent_report(request):
+    today = timezone.localdate()
+    start, end = _month_range(today)
+
+    # Expected rent: sum invoices due in this month
+    expected = (
+        RentInvoice.objects.filter(due_date__gte=start, due_date__lt=end)
+        .aggregate(x=Sum("amount_due"))["x"]
+        or Decimal("0.00")
+    )
+
+    # Collected rent: sum payments made in this month
+    collected = (
+        RentPayment.objects.filter(payment_date__gte=start, payment_date__lt=end)
+        .aggregate(x=Sum("amount"))["x"]
+        or Decimal("0.00")
+    )
+
+    invoices = RentInvoice.objects.filter(due_date__gte=start, due_date__lt=end).select_related("student", "occupancy")
+    payments = RentPayment.objects.filter(payment_date__gte=start, payment_date__lt=end).select_related("invoice", "invoice__student")
+
+    return render(request, "dashboard/reports_rent.html", {
+        "start": start, "end": end,
+        "expected": expected, "collected": collected,
+        "invoices": invoices, "payments": payments,
+    })
+
+
+@login_required
+def expenses_report(request):
+    today = timezone.localdate()
+    start, end = _month_range(today)
+
+    total_expenses = (
+        Expense.objects.filter(date__gte=start, date__lt=end)
+        .aggregate(x=Sum("amount"))["x"]
+        or Decimal("0.00")
+    )
+
+    items = Expense.objects.filter(date__gte=start, date__lt=end).order_by("-date")
+
+    return render(request, "dashboard/reports_expenses.html", {
+        "start": start, "end": end,
+        "total_expenses": total_expenses,
+        "items": items,
+    })
+
+
+@login_required
+def profit_report(request):
+    today = timezone.localdate()
+    start, end = _month_range(today)
+
+    collected = (
+        RentPayment.objects.filter(payment_date__gte=start, payment_date__lt=end)
+        .aggregate(x=Sum("amount"))["x"]
+        or Decimal("0.00")
+    )
+
+    expenses = (
+        Expense.objects.filter(date__gte=start, date__lt=end)
+        .aggregate(x=Sum("amount"))["x"]
+        or Decimal("0.00")
     )
 
     profit = collected - expenses
