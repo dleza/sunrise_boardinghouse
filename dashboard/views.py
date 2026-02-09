@@ -947,3 +947,86 @@ def finance_reports(request):
         "profit_series": profit_series,
         "rows": rows[:24],
     })
+
+from django.db.models import Sum
+from django.utils import timezone
+from datetime import date
+from decimal import Decimal
+
+from billing.models import Payment, Invoice
+from expenses.models import Expense
+
+
+def _month_range(d: date):
+    start = d.replace(day=1)
+    if start.month == 12:
+        end = start.replace(year=start.year + 1, month=1, day=1)
+    else:
+        end = start.replace(month=start.month + 1, day=1)
+    return start, end
+
+
+def reports_home(request):
+    return render(request, "dashboard/reports_home.html")
+
+
+def rent_report(request):
+    today = timezone.localdate()
+    start, end = _month_range(today)
+
+    expected = (
+        Invoice.objects.filter(issue_date__gte=start, issue_date__lt=end)
+        .aggregate(x=Sum("amount"))["x"] or Decimal("0.00")
+    )
+
+    collected = (
+        Payment.objects.filter(paid_on__gte=start, paid_on__lt=end)
+        .aggregate(x=Sum("amount"))["x"] or Decimal("0.00")
+    )
+
+    return render(request, "dashboard/reports_rent.html", {
+        "start": start, "end": end,
+        "expected": expected, "collected": collected,
+    })
+
+
+def expenses_report(request):
+    today = timezone.localdate()
+    start, end = _month_range(today)
+
+    total_expenses = (
+        Expense.objects.filter(date__gte=start, date__lt=end)
+        .aggregate(x=Sum("amount"))["x"] or Decimal("0.00")
+    )
+
+    items = Expense.objects.filter(date__gte=start, date__lt=end).order_by("-date")
+
+    return render(request, "dashboard/reports_expenses.html", {
+        "start": start, "end": end,
+        "total_expenses": total_expenses,
+        "items": items,
+    })
+
+
+def profit_report(request):
+    today = timezone.localdate()
+    start, end = _month_range(today)
+
+    collected = (
+        Payment.objects.filter(paid_on__gte=start, paid_on__lt=end)
+        .aggregate(x=Sum("amount"))["x"] or Decimal("0.00")
+    )
+
+    expenses = (
+        Expense.objects.filter(date__gte=start, date__lt=end)
+        .aggregate(x=Sum("amount"))["x"] or Decimal("0.00")
+    )
+
+    profit = collected - expenses
+
+    return render(request, "dashboard/reports_profit.html", {
+        "start": start, "end": end,
+        "collected": collected,
+        "expenses": expenses,
+        "profit": profit,
+    })

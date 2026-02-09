@@ -1,0 +1,13 @@
+{% extends "dashboard/base_dashboard.html" %}
+{% block title %}Profit Report{% endblock %}
+{% block content %}
+<h1 class="section-title">Profit</h1>
+<p class="section-sub">{{ start }} to {{ end }}</p>
+
+<div class="sun-card p-4">
+  <p><b>Collected:</b> ZMW {{ collected }}</p>
+  <p><b>Expenses:</b> ZMW {{ expenses }}</p>
+  <hr>
+  <p><b>Profit:</b> ZMW {{ profit }}</p>
+</div>
+{% endblock %}

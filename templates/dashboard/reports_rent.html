@@ -1,0 +1,12 @@
+{% extends "dashboard/base_dashboard.html" %}
+{% block title %}Rent Collection Report{% endblock %}
+{% block content %}
+<h1 class="section-title">Rent Collection</h1>
+<p class="section-sub">{{ start }} to {{ end }}</p>
+
+<div class="sun-card p-4">
+  <p><b>Expected:</b> ZMW {{ expected }}</p>
+  <p><b>Collected:</b> ZMW {{ collected }}</p>
+  <p><b>Balance:</b> ZMW {{ expected|floatformat:2|add:"-0" }}</p>
+</div>
+{% endblock %}

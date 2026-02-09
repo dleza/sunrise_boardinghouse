@@ -61,12 +61,22 @@ TEMPLATES = [
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 # --- Database (Render provides DATABASE_URL when Postgres is attached) ---
+""" DATABASES = {
+    "default": dj_database_url.config(
+        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+        conn_max_age=600,
+    )
+} """
+
+import dj_database_url
+
 DATABASES = {
     "default": dj_database_url.config(
         default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
         conn_max_age=600,
     )
 }
+
 
 # --- Static files ---
 STATIC_URL = "/static/"

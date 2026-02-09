@@ -22,5 +22,9 @@ urlpatterns = [
     path("reports/maintenance/", views.maintenance_reports, name="dash_maintenance_reports"),
     path("reports/finance/", views.finance_reports, name="dash_finance_reports"),
     path("billing/generate-invoices/", views.generate_invoices, name="dash_generate_invoices"),
+    path("reports/", views.reports_home, name="reports_home"),
+    path("reports/rent/", views.rent_report, name="rent_report"),
+    path("reports/expenses/", views.expenses_report, name="expenses_report"),
+    path("reports/profit/", views.profit_report, name="profit_report"),
 
 ]

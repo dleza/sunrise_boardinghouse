@@ -9,21 +9,21 @@
     <div class="sun-card p-4 h-100">
       <h5 class="section-title">Rent Collection</h5>
       <p class="section-sub">Expected vs collected rent</p>
-      <a class="btn btn-outline-sunrise" href="#">View Report</a>
+      <a class="btn btn-sunrise" href="{% url 'rent_report' %}">View Report</a>
     </div>
   </div>
   <div class="col-md-4">
     <div class="sun-card p-4 h-100">
       <h5 class="section-title">Expenses</h5>
       <p class="section-sub">Utilities and other expenses</p>
-      <a class="btn btn-outline-sunrise" href="#">View Report</a>
+      <a class="btn btn-sunrise" href="{% url 'expenses_report' %}">View Report</a>
     </div>
   </div>
   <div class="col-md-4">
     <div class="sun-card p-4 h-100">
       <h5 class="section-title">Profit</h5>
       <p class="section-sub">Rent collected minus expenses</p>
-      <a class="btn btn-outline-sunrise" href="#">View Report</a>
+      <a class="btn btn-sunrise" href="{% url 'profit_report' %}">View Report</a>
     </div>
   </div>
 </div>

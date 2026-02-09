@@ -1,0 +1,29 @@
+{% extends "dashboard/base_dashboard.html" %}
+{% block title %}Expenses Report{% endblock %}
+{% block content %}
+<h1 class="section-title">Expenses</h1>
+<p class="section-sub">{{ start }} to {{ end }}</p>
+
+<div class="sun-card p-4 mb-3">
+  <p><b>Total Expenses:</b> ZMW {{ total_expenses }}</p>
+</div>
+
+<div class="sun-card p-4">
+  <div class="table-responsive">
+    <table class="table align-middle">
+      <thead><tr><th>Date</th><th>Item</th><th class="text-end">Amount</th></tr></thead>
+      <tbody>
+      {% for e in items %}
+        <tr>
+          <td>{{ e.date }}</td>
+          <td>{{ e.title|default:e.category }}</td>
+          <td class="text-end">ZMW {{ e.amount }}</td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="3" class="text-center">No expenses recorded for this month.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
