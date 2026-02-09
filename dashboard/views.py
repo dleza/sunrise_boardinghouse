@@ -1124,3 +1124,6 @@ def profit_report(request):
         "expenses": expenses,
         "profit": profit,
     })
+@login_required
+def reports_home(request):
+    return render(request, "dashboard/reports_home.html")
