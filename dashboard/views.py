@@ -1127,3 +1127,70 @@ def profit_report(request):
 @login_required
 def reports_home(request):
     return render(request, "dashboard/reports_home.html")
+
+from django.db.models import Sum, Count, Q
+from django.utils import timezone
+from decimal import Decimal
+from billing.models import RentInvoice
+from maintenance.models import Maintenance
+from rooms.models import Room
+from tenants.models import Occupancy
+from expenses.models import Expense
+from billing.models import RentPayment
+
+
+@login_required
+def dashboard_home(request):
+    today = timezone.localdate()
+
+    # -------------------------
+    # Occupancy Stats
+    # -------------------------
+    total_rooms = Room.objects.count()
+    total_beds = sum(r.capacity for r in Room.objects.all())
+    occupied_beds = Occupancy.objects.filter(active=True).count()
+    available_beds = total_beds - occupied_beds
+
+    # -------------------------
+    # Financial Summary (This Month)
+    # -------------------------
+    month_start = today.replace(day=1)
+
+    collected = (
+        RentPayment.objects
+        .filter(payment_date__gte=month_start)
+        .aggregate(x=Sum("amount"))["x"] or Decimal("0.00")
+    )
+
+    expenses = (
+        Expense.objects
+        .filter(date__gte=month_start)
+        .aggregate(x=Sum("amount"))["x"] or Decimal("0.00")
+    )
+
+    profit = collected - expenses
+
+    # -------------------------
+    # Alerts
+    # -------------------------
+
+    overdue_invoices = RentInvoice.objects.filter(status="OVERDUE").count()
+
+    unpaid_invoices = RentInvoice.objects.filter(status="UNPAID").count()
+
+    open_maintenance = Maintenance.objects.filter(status="OPEN").count()
+
+    context = {
+        "total_rooms": total_rooms,
+        "total_beds": total_beds,
+        "occupied_beds": occupied_beds,
+        "available_beds": available_beds,
+        "collected": collected,
+        "expenses": expenses,
+        "profit": profit,
+        "overdue_invoices": overdue_invoices,
+        "unpaid_invoices": unpaid_invoices,
+        "open_maintenance": open_maintenance,
+    }
+
+    return render(request, "dashboard/index.html", context)

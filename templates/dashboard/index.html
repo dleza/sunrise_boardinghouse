@@ -89,7 +89,7 @@
 
       <div class="small-note fw-bold mb-2">Overdue Students (sample)</div>
       <div class="table-responsive">
-        <table class="table align-middle">
+        <!-- <table class="table align-middle">
           <thead>
             <tr>
               <th>Student</th>
@@ -115,7 +115,25 @@
               <td><a class="btn btn-outline-sunrise btn-sm" href="{% url 'dash_payments' %}">Record Payment</a></td>
             </tr>
           </tbody>
-        </table>
+        </table> -->
+        {% if overdue_invoices > 0 %}
+          <div class="alert alert-danger">
+            {{ overdue_invoices }} overdue invoices require attention.
+          </div>
+          {% endif %}
+
+          {% if unpaid_invoices > 0 %}
+          <div class="alert alert-warning">
+            {{ unpaid_invoices }} unpaid invoices this month.
+          </div>
+          {% endif %}
+
+          {% if open_maintenance > 0 %}
+          <div class="alert alert-info">
+            {{ open_maintenance }} open maintenance issues.
+          </div>
+        {% endif %}
+
       </div>
 
       <div class="small-note fw-bold mt-3 mb-2">Upcoming Payments (Next 7 Days)</div>
