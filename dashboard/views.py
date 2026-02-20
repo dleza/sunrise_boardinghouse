@@ -1132,7 +1132,7 @@ from django.db.models import Sum, Count, Q
 from django.utils import timezone
 from decimal import Decimal
 from billing.models import RentInvoice
-from maintenance.models import Maintenance
+# from maintenance.models import Maintenance
 from rooms.models import Room
 from tenants.models import Occupancy
 from expenses.models import Expense
@@ -1178,7 +1178,7 @@ def dashboard_home(request):
 
     unpaid_invoices = RentInvoice.objects.filter(status="UNPAID").count()
 
-    open_maintenance = Maintenance.objects.filter(status="OPEN").count()
+    # open_maintenance = Maintenance.objects.filter(status="OPEN").count()
 
     context = {
         "total_rooms": total_rooms,
@@ -1190,7 +1190,7 @@ def dashboard_home(request):
         "profit": profit,
         "overdue_invoices": overdue_invoices,
         "unpaid_invoices": unpaid_invoices,
-        "open_maintenance": open_maintenance,
+        # "open_maintenance": open_maintenance,
     }
 
     return render(request, "dashboard/index.html", context)
